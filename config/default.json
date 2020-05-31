@@ -1,0 +1,4 @@
+{
+    "mongoURI": "mongodb+srv://hongthaibach:hongthai9@cluster0-sds19.mongodb.net/DOM?retryWrites=true&w=majority",
+    "jwtSecret": "dl_myJwtSecret"
+}
