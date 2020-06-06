@@ -56,11 +56,61 @@ router.get('/newsfeed',identifyUserLogin, (req, res, next) => {
 router.get('/mynewsfeed',identifyUserLogin, (req, res, next) => {
     Post.find({postedBy:req.user._id})
     .populate("postedBy", "_id name")
+    .populate("comments.postedBy", "_id name")
     .then(mynewsfeed => {
         res.json({mynewsfeed})
     })
     .catch(err => {
         console.log(err)
+    })
+})
+
+router.put('/like', identifyUserLogin, (req,res, next)=> {
+    Post.findByIdAndUpdate(req.body.postId, {
+        $push:{likes:req.user._id}
+    },{
+        new:true
+    }).exec((err,result) => {
+        if(err){
+            return res.status(401).json({error:err})
+        }else{
+            res.json(result)
+        }
+    })
+})
+
+router.put('/unlike', identifyUserLogin, (req,res, next)=> {
+    Post.findByIdAndUpdate(req.body.postId, {
+        $pull:{likes:req.user._id}
+    },{
+        new:true
+    }).exec((err,result) => {
+        if(err){
+            return res.status(401).json({error:err})
+        }else{
+            res.json(result)
+        }
+    })
+})
+
+router.put('/comment', identifyUserLogin, (req,res, next)=> {
+    const comment = {
+        text: req.body.text,
+        postedBy: req.user._id
+    }
+    Post.findByIdAndUpdate(req.body.postId, {
+        $push:{comments:comment}
+    },{
+        new:true
+    })
+    .populate("comments.postedBy", "_id name")
+    .populate("postedBy", "_id name")
+    .exec((err,result) => {
+        if(err){
+            return res.status(401).json({error:err})
+        }else{
+            res.json(result)
+        }
     })
 })
 
