@@ -40,6 +40,7 @@ router.get('/newsfeed',identifyUserLogin, (req, res, next) => {
     Post.find()
         // populate use for get user id and user name post newfeed
         .populate("postedBy","_id name") 
+        .populate("comments.postedBy", "_id name")
         .then(posts => {
             res.json({posts})
         })
@@ -56,7 +57,6 @@ router.get('/newsfeed',identifyUserLogin, (req, res, next) => {
 router.get('/mynewsfeed',identifyUserLogin, (req, res, next) => {
     Post.find({postedBy:req.user._id})
     .populate("postedBy", "_id name")
-    .populate("comments.postedBy", "_id name")
     .then(mynewsfeed => {
         res.json({mynewsfeed})
     })
@@ -103,13 +103,34 @@ router.put('/comment', identifyUserLogin, (req,res, next)=> {
     },{
         new:true
     })
-    .populate("comments.postedBy", "_id name")
-    .populate("postedBy", "_id name")
+    .populate("comments.postedBy","_id name")
+    .populate("postedBy","_id name")
     .exec((err,result) => {
         if(err){
             return res.status(401).json({error:err})
         }else{
             res.json(result)
+        }
+    })
+})
+
+router.delete('/deletepost/:postid',identifyUserLogin, (req, res) => {
+    Post.findOne({_id:req.params.postid})
+    .populate("postedBy","_id")
+    .exec((err,post) => {
+        //console.log(post)
+        if(err||!post){
+            return res.status(400).json({error:err})
+        }
+        // console.log(req.user, 'user')
+        // console.log(post.postedBy._id, 'post')
+        if(post.postedBy._id.toString() === req.user._id.toString()){
+            post.remove()
+            .then(result => {
+                res.json(result)
+            }).catch(err => {
+                console.log(err)
+            })
         }
     })
 })
