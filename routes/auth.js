@@ -74,8 +74,8 @@ router.post('/login', (req, res, next) => {
                 if(Match){
                     //res.json({message: "Login Success"})
                     const token = jwt.sign({_id:userReady._id}, config.get('jwtSecret'))
-                    const {_id, name, email} = userReady
-                    res.json({token, user:{_id, name, email}})
+                    const {_id, name, email, followers, following} = userReady
+                    res.json({token, user:{_id, name, email, followers, following}})
                 }
                 else{
                     return res.status(400).json({error: 'Invalid credentials password'});

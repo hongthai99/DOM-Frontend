@@ -1,6 +1,9 @@
 const mongoose = require('mongoose');
-
+//
 const Schema = mongoose.Schema;
+//
+const {ObjectId} = mongoose.Schema.Types
+
 
 //Create Schema user
 const userSchema = new Schema({
@@ -15,6 +18,18 @@ const userSchema = new Schema({
     password: {
         type: String,
         required: true
-    }
+    },
+    followers:[
+        {
+            type:ObjectId,
+            ref:"User"
+        }
+    ],
+    following:[
+        {
+            type:ObjectId,
+            ref:"User"
+        }
+    ]
 })
 module.exports = mongoose.model("User", userSchema)

@@ -32,6 +32,7 @@ app.use(express.json());
 //blablabla
 app.use('/',require('./routes/auth'));
 app.use('/',require('./routes/post'));
+app.use('/',require('./routes/user'));
 
 const PORT = process.env.PORT || 8888;
 app.listen(PORT, () => console.log(`Server has started ... `));

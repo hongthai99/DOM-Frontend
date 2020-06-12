@@ -32,12 +32,31 @@ router.post('/createnewsfeed',identifyUserLogin,(req, res, next) => {
 })
 
 //make create get all newsfeed route
-//@route GET /createnewsfeed
+//@route GET /newsfeed
 //@desc GET newsfeed
 //access Private
 
 router.get('/newsfeed',identifyUserLogin, (req, res, next) => {
     Post.find()
+        // populate use for get user id and user name post newfeed
+        .populate("postedBy","_id name") 
+        .populate("comments.postedBy", "_id name")
+        .then(posts => {
+            res.json({posts})
+        })
+        .catch(err => {
+            console.log(err)
+        })
+})
+
+//make create get all newsfeed route
+//@route GET /createnewsfeed
+//@desc GET newsfeed
+//access Private
+
+router.get('/subnewsfeed',identifyUserLogin, (req, res, next) => {
+    // if postedBy in following 
+    Post.find({postedBy:{$in:req.user.following}})
         // populate use for get user id and user name post newfeed
         .populate("postedBy","_id name") 
         .populate("comments.postedBy", "_id name")
