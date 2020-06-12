@@ -20,7 +20,7 @@ const User = mongoose.model("User");
 //@desc make a resgister for user
 //access Private
 router.post('/register', (req,res, next) => {
-    const {name, email, password } = req.body
+    const {name, email, password, pic} = req.body
 
     // check dieu kien dien thong tin co du hay khoong
     if(!name||!email || !password) {
@@ -39,7 +39,8 @@ router.post('/register', (req,res, next) => {
                 const user = new User({
                     name,
                     email,
-                    password:hashedpassword
+                    password:hashedpassword,
+                    pic
                 })
                 user.save()
                     .then(user => {
@@ -74,8 +75,8 @@ router.post('/login', (req, res, next) => {
                 if(Match){
                     //res.json({message: "Login Success"})
                     const token = jwt.sign({_id:userReady._id}, config.get('jwtSecret'))
-                    const {_id, name, email, followers, following} = userReady
-                    res.json({token, user:{_id, name, email, followers, following}})
+                    const {_id, name, email, followers, following, pic} = userReady
+                    res.json({token, user:{_id, name, email, followers, following, pic}})
                 }
                 else{
                     return res.status(400).json({error: 'Invalid credentials password'});

@@ -19,6 +19,10 @@ const userSchema = new Schema({
         type: String,
         required: true
     },
+    pic:{
+        type:String,
+        default:"https://res.cloudinary.com/domedia/image/upload/v1591961564/rfjxnykvgogemettlxeq.jpg"
+    },
     followers:[
         {
             type:ObjectId,
